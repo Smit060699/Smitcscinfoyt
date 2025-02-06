@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smit CSC Info</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f5f5f5; margin: 0; padding: 0; }
+        header { background-color: #007bff; color: white; padding: 15px; font-size: 24px; }
+        .container { padding: 20px; }
+        .membership-plan, .video { background-color: white; padding: 20px; margin: 10px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
+        .video-container { display: flex; flex-wrap: wrap; justify-content: center; }
+        .chatbox { border: 1px solid #ddd; height: 300px; overflow-y: scroll; margin-top: 20px; padding: 10px; background: white; }
+        input, button { padding: 10px; margin-top: 10px; width: 90%; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+        .login-btn { margin: 10px; padding: 10px; font-size: 16px; cursor: pointer; width: 80%; }
+        .google { background-color: #db4437; color: white; }
+        .facebook { background-color: #3b5998; color: white; }
+    </style>
+</head>
+<body>
+
+<header>Smit CSC Info</header>
+
+<div class="container">
+    <h2>📢 Prime Membership Benefits</h2>
+    <p>📌 Full guidance on Government Schemes.</p>
+    <p>📌 Live Support for technical issues.</p>
+    <p>📌 Access to exclusive IDs and processes.</p>
+    <p>📌 Prime Membership Certificate.</p>
+    <p>📌 Step-by-step business growth guidance.</p>
+
+    <h3>📌 Choose Your Plan</h3>
+    <div class="membership-plan">
+        <h4>Prime Membership (1 Month)</h4>
+        <p>₹299</p>
+        <button onclick="window.location.href='https://payment-gateway-link/299'">Pay Now</button>
+    </div>
+
+    <div class="membership-plan">
+        <h4>Prime Membership (3 Months)</h4>
+        <p>₹799 (₹100 Discount)</p>
+        <button onclick="window.location.href='https://payment-gateway-link/799'">Pay Now</button>
+    </div>
+
+    <div class="membership-plan">
+        <h4>Prime Membership (1 Year)</h4>
+        <p>₹2499 (₹500 Discount)</p>
+        <button onclick="window.location.href='https://payment-gateway-link/2499'">Pay Now</button>
+    </div>
+
+    <h3>📞 Contact & Social Links</h3>
+    <p><a href="mailto:smitcscinfoyt@gmail.com">Email Us</a></p>
+    <p><a href="https://youtube.com/@smitcscinfo">YouTube Channel</a></p>
+    <p><a href="https://chat.whatsapp.com/CS5vmo9R3yXKxlvBHP0EYh">Join WhatsApp Group</a></p>
+    <p><a href="https://t.me/+PnazScJdJXI3MzVl">Join Telegram Group</a></p>
+
+    <h3>📺 Upload YouTube Videos</h3>
+    <input type="text" id="videoURL" placeholder="Enter YouTube Video Link">
+    <button onclick="addVideo()">Upload Video</button>
+
+    <h3>🎥 Uploaded Videos</h3>
+    <div class="video-container" id="videoList"></div>
+
+    <h3>💬 Chatbox</h3>
+    <div class="chatbox" id="chatbox">
+        <p><b>Admin:</b> Welcome to the group chat!</p>
+    </div>
+    <input type="text" id="userMessage" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <h3>🔐 Login to Access Features</h3>
+    <button class="login-btn google" onclick="googleLogin()">Login with Google</button>
+    <button class="login-btn facebook" onclick="facebookLogin()">Login with Facebook</button>
+    <p id="user-info"></p>
+    <button id="logout" class="login-btn" style="display:none;" onclick="logout()">Logout</button>
+</div>
+
+<script>
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDmWPMcky73vK5BpqWpe5RwlfkylkiiVBs",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "smit-csc-info",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function googleLogin() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider).then(result => {
+            document.getElementById('user-info').innerHTML = "Welcome, " + result.user.displayName;
+            document.getElementById('logout').style.display = "block";
+        }).catch(error => {
+            console.error(error.message);
+        });
+    }
+
+    function facebookLogin() {
+        const provider = new firebase.auth.FacebookAuthProvider();
+        auth.signInWithPopup(provider).then(result => {
+            document.getElementById('user-info').innerHTML = "Welcome, " + result.user.displayName;
+            document.getElementById('logout').style.display = "block";
+        }).catch(error => {
+            console.error(error.message);
+        });
+    }
+
+    function logout() {
+        auth.signOut().then(() => {
+            document.getElementById('user-info').innerHTML = "";
+            document.getElementById('logout').style.display = "none";
+        }).catch(error => {
+            console.error(error.message);
+        });
+    }
+
+    function sendMessage() {
+        let message = document.getElementById('userMessage').value;
+        if (message.trim() !== "") {
+            let chatbox = document.getElementById('chatbox');
+            let newMessage = document.createElement("p");
+            newMessage.innerHTML = "<b>You:</b> " + message;
+            chatbox.appendChild(newMessage);
+            document.getElementById('userMessage').value = "";
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    }
+
+    function addVideo() {
+        let videoURL = document.getElementById('videoURL').value;
+        if (videoURL.includes("youtube.com") || videoURL.includes("youtu.be")) {
+            let videoID = videoURL.split('v=')[1] || videoURL.split('/').pop();
+            let embedURL = "https://www.youtube.com/embed/" + videoID.split('&')[0];
+
+            let videoDiv = document.createElement('div');
+            videoDiv.className = "video";
+            videoDiv.innerHTML = `<iframe width="300" height="200" src="${embedURL}" frameborder="0" allowfullscreen></iframe>`;
+            
+            document.getElementById('videoList').appendChild(videoDiv);
+            document.getElementById('videoURL').value = "";
+        } else {
+            alert("Please enter a valid YouTube link!");
+        }
+    }
+</script>
+
+</body>
+</html>
